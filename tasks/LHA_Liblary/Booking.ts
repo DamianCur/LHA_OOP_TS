@@ -27,7 +27,7 @@ class Booking {
 
     constructor(bookingUser: IBookingUser) {
 
-        // checkInstance(bookingUser, User, "Invalid User.")
+    
 
         this.user = bookingUser
         this.borrowDate = new Date()
@@ -37,27 +37,26 @@ class Booking {
     }
 
 
-    borrowBook(bookName: IBook): void {
-        // checkInstance(bookName, Book, "Invalid instance of book")
-
-
-        this.listOfBorrowBooks.push(bookName)
+    borrowBook(givenBook: IBook): void {
+        this.listOfBorrowBooks.push(givenBook)
         this.borrowDate = new Date()
     }
 
-    returnBook(bookName: IBook) {
-        // checkInstance(bookName, Book, "Invalid instance of book")
-        const conditionIndexOfReturningBook = (el: IBook) => {
-            el.uuidv4 === bookName.uuidv4
-        }
+    returnBook(givenBook: IBook) {
+        const indexOfReturningBook = this.listOfBorrowBooks.findIndex((el) => {
+            el.uuidv4 === givenBook.uuidv4
+        })
 
-        const indexOfReturningBook = this.listOfBorrowBooks.findIndex(conditionIndexOfReturningBook)
+        if (indexOfReturningBook === -1) throw Error(`There is no book like ${givenBook.title}`)
+
         this.listOfBorrowBooks.splice(indexOfReturningBook, 1)
 
         this.returnDate = new Date()
 
-        if (subtractDates(this.returnDate, this.borrowDate) > 7) {
-            this.penalty = (subtractDates(this.returnDate, this.borrowDate) - 7) * 2
+        const dayDiffrence = subtractDates(this.returnDate, this.borrowDate);
+
+        if (dayDiffrence > 7) {
+            this.penalty = (dayDiffrence - 7) * 2
         }
 
         return this.penalty
