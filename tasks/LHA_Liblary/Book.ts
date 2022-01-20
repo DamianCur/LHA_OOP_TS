@@ -4,7 +4,8 @@ import {
 
 import {
     stringValidation,
-    randomBookDescription
+    randomBookDescription,
+    numberValidation
 } from './utility.js';
 
 import {IBookDescription} from './types'
@@ -26,7 +27,7 @@ class Book {
     constructor(title: string, author: string, quantity: number) {
         stringValidation(title)
         stringValidation(author)
-        // numberValidation(quantity)
+        numberValidation(quantity)
 
 
         this.title = title
