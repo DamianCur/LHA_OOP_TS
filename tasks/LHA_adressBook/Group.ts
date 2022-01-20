@@ -55,7 +55,7 @@ class Group {
             })
         })
 
-        //ponowne wytłumaczenie działania metody
+       
 
         return isInValues
     }
