@@ -7,12 +7,11 @@ import {
 } from "./User.js"
 import {
     checkInstance,
-    // checkIfKeyIsCorrect
 } from "./utility.js"
 
-import { 
+import {
     Booking
- } from './Booking'
+} from './Booking'
 
 
 
@@ -30,7 +29,7 @@ import {
 class Liblary {
     listOfBooks: IBook[]
     listOfAvailableBooks: IBook[]
-    listOfBorrowedBooks: IBook[]
+    listOfBorrowedBooks: IBook[] // IBooking[]
     listOfUsers: IUser[]
 
     constructor() {
@@ -44,20 +43,23 @@ class Liblary {
     addBookToListofAllBooks(newAddedBook: IBook) {
         checkInstance(newAddedBook, Book, "Invalid Book")
 
-        // findIndex
-        const conditionFindIndexOfBook = (el: IBook) => {
-            el.uuidv4 === newAddedBook.uuidv4
+
+
+        const indexOfNewAddedBook = this.listOfBooks.findIndex((avBookIndex) => {
+            return avBookIndex.uuidv4 === newAddedBook.uuidv4
+        })
+
+        if (indexOfNewAddedBook !== -1) {
+            this.listOfBooks[indexOfNewAddedBook].quantity += 1;
+            return
         }
 
-        if (this.listOfBooks.findIndex(conditionFindIndexOfBook)) throw Error("This book is already in this list.")
         this.listOfBooks.push(newAddedBook)
     }
 
 
     addBookToSpecifiedList(listName: "availableBooks" | "borrowedBooks", newAddedBook: IBook) {
         checkInstance(newAddedBook, Book, "Invalid Book")
-
-        const aveliableLists = ["availableBooks", "borrowedBooks"]
 
         switch (listName) {
             case "availableBooks":
@@ -67,7 +69,6 @@ class Liblary {
                 this.listOfBorrowedBooks.push(newAddedBook)
                 break;
             default:
-                // checkIfKeyIsCorrect(listName, aveliableLists)
         }
 
     }
@@ -77,67 +78,112 @@ class Liblary {
 
         const aveliableLists = ["availableBooks", "borrowedBooks"]
 
+
+
         if (!aveliableLists.includes(listName)) throw Error("Invalid list name.")
 
         switch (listName) {
             case "availableBooks":
-                if (!this.listOfAvailableBooks.includes(bookToRemove)) throw Error("This book is not in the list.")
 
-                const indexOfAvailableRemovedBook = this.listOfAvailableBooks.indexOf(bookToRemove)
+                const indexOfRemovingBookInAvailableList = this.listOfAvailableBooks.findIndex((availableBook) => {
+                    return availableBook.uuidv4 === bookToRemove.uuidv4
+                })
 
-                this.listOfAvailableBooks.splice(indexOfAvailableRemovedBook, 1)
+                let quantityOfRemovedBook = this.listOfAvailableBooks[indexOfRemovingBookInAvailableList].quantity
+
+
+                if (indexOfRemovingBookInAvailableList === -1) throw Error("This book is not on the list.")
+
+
+                if (quantityOfRemovedBook <= 2) {
+                    quantityOfRemovedBook -= 1
+                } else if (quantityOfRemovedBook === 1) {
+                    this.listOfAvailableBooks.splice(indexOfRemovingBookInAvailableList, 1)
+                }
                 break;
+
+
+
             case "borrowedBooks":
-                if (!this.listOfBorrowedBooks.includes(bookToRemove)) throw Error("This book is not in the list.")
+                const indexOfRemovingBookInBorrowedList = this.listOfAvailableBooks.findIndex((availableBook) => {
+                    return availableBook.uuidv4 === bookToRemove.uuidv4
+                })
 
-                const indexOfBorrowedRemovedBook = this.listOfBorrowedBooks.indexOf(bookToRemove)
-                this.listOfBorrowedBooks.splice(indexOfBorrowedRemovedBook, 1)
-                break;
+                let quantityOfRemovedBookBorrowed = this.listOfBorrowedBooks[indexOfRemovingBookInBorrowedList].quantity
+
+
+                if (indexOfRemovingBookInBorrowedList === -1) throw Error("This book is not on the list.")
+
+
+                if (quantityOfRemovedBookBorrowed <= 2) {
+                    quantityOfRemovedBookBorrowed -= 1
+                } else if (quantityOfRemovedBookBorrowed === 1) {
+                    this.listOfAvailableBooks.splice(indexOfRemovingBookInBorrowedList, 1)
+                }
             default:
                 throw Error("Invalid list name");
         }
     }
 
     addUserToList(user: IUser) {
-        checkInstance(user, User, "Invalid user")
+        // checkInstance(user, User, "Invalid user")
 
-        if (this.listOfUsers.includes(user)) throw Error("This user already exists")
+        const indexOfUser = this.listOfUsers.findIndex((listUser) => {
+            return listUser.id === user.id
+        })
 
-        // this.listOfUsers.push(user)
+        if (indexOfUser !== -1) throw Error("This user alreay exists.")
+
+        this.listOfUsers.push(user)
     }
 
-    borrowBookForUser(userName: IUser, bookToBorrow: IBook) {
-        checkInstance(userName, User, "Invalid user")
-        checkInstance(bookToBorrow, Book, "Invalid book")
+    borrowBookForUser(user: IUser, bookToBorrow: IBook) {
+        // CZy userName i bookToBorrow istnieją w bibliotece
 
+        const indexOfUser = this.listOfUsers.findIndex((userList) => {
+            return userList.id === user.id
+        })
 
-        if (!this.listOfUsers.some((user) => {
-            user.id === userName.id
-        })) this.listOfUsers.push(userName)
+        if (indexOfUser === -1) {
+            this.listOfUsers.push(user)
+            //czy mogę od razu tworzyć tutaj usera?
+        }
+        const booking = new Booking(user)
+
+        const indexOfBookToBorrow = this.listOfAvailableBooks.findIndex((availableBook) => {
+            return availableBook.uuidv4 === bookToBorrow.uuidv4
+        })
+
+        if (indexOfBookToBorrow === -1) throw Error("There is no book that you are looking for.")
 
         this.listOfBorrowedBooks.push(bookToBorrow)
+        this.listOfAvailableBooks.splice(indexOfBookToBorrow, 1)
 
-        // const Booking: IBooking = new Booking(userName))
-        //PROBLEM Z IMPORTEM KLASY
+        booking.borrowBook(bookToBorrow)
 
-        // new Booking / dodajesz do bookingu - bookToBorrow
     }
 
-    returnBookByUser(userName: IUser, bookToReturn: IBook) {
+    returnBookByUser(userName: IUser, bookToReturn: IBook) { // userBooking, bookToReturn
 
-        checkInstance(userName, User, "Invalid user")
-        checkInstance(bookToReturn, Book, "Invalid book")
+        // checkInstance(userName, User, "Invalid user")
+        // checkInstance(bookToReturn, Book, "Invalid book")
+
+        // czy isntieje userBooking w tablicy
+
 
         if (!this.listOfBorrowedBooks.includes(bookToReturn)) throw Error("This book is not on the list.")
 
         // const indexOfUserBorrowedList = userName.listOfBorrowedBooks.indexOf(bookToReturn)
         // userName.listOfBorrowedBooks.splice(indexOfUserBorrowedList, 1)
 
+        // userBooking...(bookToReturn)
+
+        // ...console.log - penalty
+
+        // listOfAvailableBooks
         const indexOfBorrowedList = this.listOfBorrowedBooks.indexOf(bookToReturn)
         this.listOfBorrowedBooks.splice(indexOfBorrowedList, 1)
     }
-
-    // AddressBook-medium
 }
 
 export default Liblary
