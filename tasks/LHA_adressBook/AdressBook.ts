@@ -1,6 +1,6 @@
 import { IContact, IGroup } from "./types"
 
-//czy importy mogą być bez rozszerzenia 
+
 
 type availableKeys = "name" | "surname" | "email" | "modificateDate";
 
@@ -17,11 +17,13 @@ class AddressBook {
     addContactToList(newContact: IContact) {
 
         const contactIndex = this.contactList.findIndex(contact => contact.uuid === newContact.uuid)
+        //stworzyc funkcje do utility
 
         if (contactIndex !== -1) throw Error("Contact already exists")
 
         this.contactList.push(newContact)
     }
+
     addGroupToList(newGroup: IGroup) {
 
         const groupIndex = this.groupList.findIndex(group => group.uuid === newGroup.uuid)
@@ -49,7 +51,15 @@ class AddressBook {
     }
 
     changeContactData(contact: IContact, key: availableKeys, value: string) {
-        if (!this.contactList.includes(contact)) throw Error("Contact not find.")
+
+
+        const checkContactInArray = this.contactList.findIndex((arrContact) => {
+            arrContact.uuid === contact.uuid
+        })
+
+        if (checkContactInArray === -1) {
+            throw Error("Contact not find.")
+        }
 
         const index = this.contactList.findIndex((el) => el.uuid === contact.uuid)
 

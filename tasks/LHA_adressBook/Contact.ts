@@ -70,12 +70,6 @@ class Contact {
 
         }
     }
-
-    // findPhrase() { 
-    //     const values = Object.values(this);
-
-    //     // .some
-    // }
 }
 
 
