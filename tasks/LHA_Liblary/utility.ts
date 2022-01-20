@@ -32,14 +32,12 @@ const randomBookDescription = () => {
     return arrOfBooksData[randomNumber]
 }
 
-// const checkIfKeyIsCorrect = (key, aveliableKeys) => {
-//     if (!aveliableKeys.includes(key)) throw Error("Invalid key value. Aveliable keys: availableBooks, borrowedBooks")
-// }
+
 
 export {
+    numberValidation,
     stringValidation,
     randomBookDescription,
     subtractDates,
     checkInstance,
-    // checkIfKeyIsCorrect
 }
