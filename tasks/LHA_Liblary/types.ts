@@ -37,6 +37,7 @@ interface IBooking {
     returnDate: Date;
     listOfBorrowBooks: IBook[];
     penalty: number;
+    uuid: string;
     borrowBook(givenBook: IBook): void
     returnBook(givenBook: IBook): number;
 }
