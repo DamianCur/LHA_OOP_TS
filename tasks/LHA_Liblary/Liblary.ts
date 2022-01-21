@@ -30,6 +30,7 @@ class Liblary {
     listOfBooks: IBook[]
     listOfAvailableBooks: IBook[]
     listOfBorrowedBooks: IBook[] // IBooking[]
+    //dlaczego IBooking czy nie powinna to być lista wypożyczonych książek?
     listOfUsers: IUser[]
 
     constructor() {
@@ -126,7 +127,6 @@ class Liblary {
     }
 
     addUserToList(user: IUser) {
-        // checkInstance(user, User, "Invalid user")
 
         const indexOfUser = this.listOfUsers.findIndex((listUser) => {
             return listUser.id === user.id
@@ -138,7 +138,6 @@ class Liblary {
     }
 
     borrowBookForUser(user: IUser, bookToBorrow: IBook) {
-        // CZy userName i bookToBorrow istnieją w bibliotece
 
         const indexOfUser = this.listOfUsers.findIndex((userList) => {
             return userList.id === user.id
@@ -163,26 +162,39 @@ class Liblary {
 
     }
 
-    returnBookByUser(userName: IUser, bookToReturn: IBook) { // userBooking, bookToReturn
+    returnBookByUser(userBooking: IBooking, bookToReturn: IBook) { // userBooking, bookToReturn
 
-        // checkInstance(userName, User, "Invalid user")
-        // checkInstance(bookToReturn, Book, "Invalid book")
+        //ponowne wytlumaczenie zmieny typu listy z wypożyczonymi książkami
 
-        // czy isntieje userBooking w tablicy
+        // czy isntieje userBooking w tablicy ||  ??
+
+        const indexOfReturningBook = this.listOfBorrowedBooks.findIndex((borrowedBooks) => {
+            return borrowedBooks.uuidv4 === bookToReturn.uuidv4
+        })
+
+        if (indexOfReturningBook === -1) throw Error("This book is not on borrowed books list.")
+
+        userBooking.returnBook(bookToReturn)
+
+        const quantityOfReturningBook = this.listOfBorrowedBooks[indexOfReturningBook].quantity
+
+        if (quantityOfReturningBook < 2) {
+            this.listOfBorrowedBooks.splice(indexOfReturningBook, 1)
+        } else {
+            this.listOfBorrowedBooks[indexOfReturningBook].quantity -= 1
+        }
+
+        this.addBookToSpecifiedList("availableBooks", bookToReturn)
+
+        const userPenalty = userBooking.penalty
+
+        if (userPenalty === 0) {
+            console.log(`Dziękujemy ${userBooking.user.name} za terminowe zwrócenie książki.`);
+            return
+        }
 
 
-        if (!this.listOfBorrowedBooks.includes(bookToReturn)) throw Error("This book is not on the list.")
-
-        // const indexOfUserBorrowedList = userName.listOfBorrowedBooks.indexOf(bookToReturn)
-        // userName.listOfBorrowedBooks.splice(indexOfUserBorrowedList, 1)
-
-        // userBooking...(bookToReturn)
-
-        // ...console.log - penalty
-
-        // listOfAvailableBooks
-        const indexOfBorrowedList = this.listOfBorrowedBooks.indexOf(bookToReturn)
-        this.listOfBorrowedBooks.splice(indexOfBorrowedList, 1)
+        console.log(`Przykro nam ${userBooking.user.name} musisz dopłacić ${userPenalty}zł za przekroczenie terminu zwrotu.`);
     }
 }
 
