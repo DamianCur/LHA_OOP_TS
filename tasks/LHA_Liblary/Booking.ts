@@ -42,7 +42,7 @@ class Booking {
         this.borrowDate = new Date()
     }
 
-    returnBook(givenBook: IBook) {
+    returnBook(givenBook: IBook): number {
         const indexOfReturningBook = this.listOfBorrowBooks.findIndex((el) => {
             el.uuidv4 === givenBook.uuidv4
         })
