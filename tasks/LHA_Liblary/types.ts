@@ -1,11 +1,3 @@
-// Interfejsy do klas
-
-interface IBookDescription {
-    bookImg: string,
-    description: string
-}
-
-
 interface IBookingUser {
     name: string
     surname: string
@@ -45,6 +37,8 @@ interface IBooking {
     returnDate: Date;
     listOfBorrowBooks: IBook[];
     penalty: number;
+    borrowBook(givenBook: IBook): void
+    returnBook(givenBook: IBook): number;
 }
 
 export {
