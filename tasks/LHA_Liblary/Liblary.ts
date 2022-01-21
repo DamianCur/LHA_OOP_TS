@@ -165,10 +165,53 @@ class Liblary {
 
     returnBookByUser(userBooking: IBooking, bookToReturn: IBook) { // userBooking, bookToReturn
 
-const indexOfBooking = this.listOfBookings.findIndex((bookingElement) => {
-    return bookingElement.uuid === userBooking.uuid
-})
+        const indexOfBooking = this.listOfBookings.findIndex((bookingElement) => {
+            return bookingElement.uuid === userBooking.uuid
+        })
 
+        if (indexOfBooking === -1) throw Error("There is no booking like this.")
+
+        const listOfBookingBorrowedBooks = this.listOfBookings[indexOfBooking].listOfBorrowBooks
+
+        const indexOfBorrowedBookInBookingList = listOfBookingBorrowedBooks.findIndex((borrowedBook) => {
+            return borrowedBook.uuidv4 === bookToReturn.uuidv4
+        })
+
+        const howManyBooksAreInUserBooking = listOfBookingBorrowedBooks.length
+
+        if (indexOfBorrowedBookInBookingList !== -1 && howManyBooksAreInUserBooking <= 1) {
+            const returnBookPenalty = userBooking.returnBook(bookToReturn)
+
+            if (returnBookPenalty > 0) {
+                console.log(`Przykro nam ${userBooking.user.name} musisz dopłacić ${returnBookPenalty}zł za przekroczenie terminu zwrotu.`);
+            } else {
+                console.log(`Dziękujemy ${userBooking.user.name} za terminowe zwrócenie książki.`)
+            }
+
+
+
+            this.listOfBookings.splice(indexOfBooking, 1)
+
+            return
+
+
+        } else if (indexOfBorrowedBookInBookingList !== -1) {
+
+            const returnBookPenalty = userBooking.returnBook(bookToReturn)
+
+            if (returnBookPenalty > 0) {
+                console.log(`Przykro nam ${userBooking.user.name} musisz dopłacić ${returnBookPenalty}zł za przekroczenie terminu zwrotu.`);
+            } else {
+                console.log(`Dziękujemy ${userBooking.user.name} za terminowe zwrócenie książki.`)
+            }
+
+
+
+            listOfBookingBorrowedBooks.splice(indexOfBorrowedBookInBookingList, 1)
+            return
+        }
+
+        throw Error("The book that you want to return is not on your borowed book list.")
 
 
 
