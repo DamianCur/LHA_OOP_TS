@@ -6,6 +6,10 @@ import {
 } from "./User.js"
 
 import {
+    v4 as uuidv4
+} from 'uuid';
+
+import {
     subtractDates,
     checkInstance
 } from "./utility.js"
@@ -24,16 +28,18 @@ class Booking {
     returnDate: Date;
     listOfBorrowBooks: IBook[];
     penalty: number;
+    uuid: string;
 
     constructor(bookingUser: IBookingUser) {
 
-    
+
 
         this.user = bookingUser
         this.borrowDate = new Date()
         this.returnDate = new Date()
         this.listOfBorrowBooks = []
         this.penalty = 0
+        this.uuid = uuidv4()
     }
 
 
