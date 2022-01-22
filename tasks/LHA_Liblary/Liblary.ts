@@ -214,45 +214,6 @@ class Liblary {
         throw Error("The book that you want to return is not on your borowed book list.")
 
 
-
-
-
-
-
-
-
-
-        //ponowne wytlumaczenie zmieny typu listy z wypożyczonymi książkami
-
-        // czy isntieje userBooking w tablicy ||  ??
-
-        // const indexOfReturningBook = this.listOfBookings.findIndex((bookings) => {
-        //     return bookings.
-        // })
-
-        // if (indexOfReturningBook === -1) throw Error("This book is not on borrowed books list.")
-
-        // userBooking.returnBook(bookToReturn)
-
-        // const quantityOfReturningBook = this.listOfBorrowedBooks[indexOfReturningBook].quantity
-
-        // if (quantityOfReturningBook < 2) {
-        //     this.listOfBorrowedBooks.splice(indexOfReturningBook, 1)
-        // } else {
-        //     this.listOfBorrowedBooks[indexOfReturningBook].quantity -= 1
-        // }
-
-        // this.addBookToSpecifiedList("availableBooks", bookToReturn)
-
-        // const userPenalty = userBooking.penalty
-
-        // if (userPenalty === 0) {
-        //     console.log(`Dziękujemy ${userBooking.user.name} za terminowe zwrócenie książki.`);
-        //     return
-        // }
-
-
-        // console.log(`Przykro nam ${userBooking.user.name} musisz dopłacić ${userPenalty}zł za przekroczenie terminu zwrotu.`);
     }
 }
 
